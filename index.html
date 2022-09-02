@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BF Interpreter</title>
+        <style>
+            #codeField{
+                width: 100%;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
+            #inputField{
+                width: 100%;
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+            #outputField{
+                width: 100%;
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+            #run{
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+        </style>
+
+        <script src="interpreter.js"></script>
+        <script>
+
+            function onRunClick(){
+
+                code = document.getElementById("codeField").value;
+                inputs = document.getElementById("inputField").value;
+
+                if(code.length == 0){
+                    
+                    return;
+                }
+
+                let numCells = Number(document.getElementById("numCells").value);
+                let sizes = document.getElementsByName("cellSize");
+                let cellSize = 0;
+
+                for(let i = 0; i < sizes.length; i++){
+
+                    if(sizes[i].checked){
+                        cellSize = Number(sizes[i].value);
+                    }
+                }
+
+                let interpreter = new BFInterpreter(cellSize, numCells);
+                let result = interpreter.run(code, inputs);
+
+                if(result.error != null){
+
+                    document.getElementById("outputField").value = result.error;
+                    return;
+                }
+
+                document.getElementById("outputField").value = result.result;
+            }
+        </script>
+    </head>
+    
+    <body>
+        <textarea id="codeField" placeholder="Enter code here" rows="20"></textarea>
+
+        <textarea id="inputField" placeholder="Enter inputs here" rows="1"></textarea>
+
+        <form>
+            <p>Select Number of cells (10-100000)</p>
+            <input type="number" id="numCells" value="30000" min="10" max="100000">
+        </form>
+
+        <form>
+            <p>Select size of cells</p>
+            <input type="radio" id="eight_bit" name="cellSize" value="8" checked>
+            <label for="eight_bit">8 bits</label>
+            <input type="radio" id="sixteen_bit" name="cellSize" value="16">
+            <label for="sixteen_bit">16 bits</label>
+            <input type="radio" id="thirtytwo_bit" name="cellSize" value="32">
+            <label for="thirtytwo_bit">32 bits</label>
+        </form>
+
+        <button title="Run" id="run" onclick="onRunClick()">Run!</button>
+
+        <textarea id="outputField" readonly rows="5">Output appears here</textarea>
+    </body>
+</html>
